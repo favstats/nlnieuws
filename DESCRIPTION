@@ -1,0 +1,18 @@
+Package: TK2023
+Type: Package
+Title: 
+Version: 0.9.9
+Author: Fabio Votta (f.a.votta@uva.nl)
+Maintainer: Fabio Votta <f.a.votta@uva.nl>
+Description: Dutch 2021 Election dashboard
+URL: https://github.com/groene/TK2023.R
+BugReports: https://github.com/groene/TK2023.R/issues
+Imports:
+    tidyverse,
+    newsanchor,
+    janitor,
+    arrow,
+    piggyback
+Depends:
+    R (>= 3.0.0)
+RoxygenNote: 5.0.1

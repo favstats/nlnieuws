@@ -1,7 +1,9 @@
 
-
-library(newsanchor)
 library(tidyverse)
+library(newsanchor)
+library(piggyback)
+
+source("utils.R")
 
 ts <- Sys.time()
 
@@ -22,8 +24,34 @@ the_nieuws <- terms_category %>%
   distinct(url, .keep_all = T) %>% 
   mutate(tstamp = ts)
 
+old_data <- arrow::read_parquet("https://github.com/favstats/nlnieuws/releases/download/nl-nieuws/nieuws.parquet") 
 
-arrow::write_parquet(the_nieuws, "nieuws.parquet")
+new_nieuws <- the_nieuws %>% 
+  anti_join(old_data %>% select(url))
+
+if(nrow(new_nieuws)!=0){
+  
+  print(paste0("New rows: ", nrow(new_nieuws)))
+  
+  fin_nieuws <- old_data %>% 
+    bind_rows(the_nieuws) %>% 
+    distinct(url, .keep_all = T)
+  
+  arrow::write_parquet(fin_nieuws, "nieuws.parquet")
+  
+  releases <- pb_releases()
+  
+  try({
+    pb_upload_file_fr(
+      "nieuws.parquet",
+      repo = "favstats/nlnieuws",
+      tag = "nl-nieuws",
+      releases = releases
+    )   
+  })
+
+} else {
+  print("No new nieuws!")
+}
 
 
-# arrow::read_parquet("nieuws.parquet")
