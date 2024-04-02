@@ -8,10 +8,6 @@ source("utils.R")
 ts <- Sys.time()
 
 
-
-thiry$results_df %>% filter(str_detect(name, "be")) %>% 
-  distinct(name) %>% pull(name) %>% dput()
-
 get_the_nieuws <- function(.x) {
   res <- get_headlines_all(country = "nl", category = .x) 
   res$results_df %>% 
@@ -35,7 +31,7 @@ old_data <- arrow::read_parquet("https://github.com/favstats/nlnieuws/releases/d
 belgian_sites <- old_data %>% 
   filter(str_detect(name, "\\.be")) %>% 
   distinct(name) %>% 
-  pull(name) %>% dput()
+  pull(name) %>% #dput()
   c(c("Redactie24.be", "Elle.be", "Www.hln.be", "Demorgen.be", "apache.be", "tijd.be",
       "Www.vrt.be", "Nieuwsblad.be", "Hbvl.be", "Www.gva.be", "Kw.be", "Standaard.be", 
       "Www.tvl.be", "Knack.be", "Www.vrt.be", "Pal.be")) %>% 
@@ -47,6 +43,7 @@ every_dat <- get_everything(query = the_query,
                             language = "nl", 
                             exclude_domains =  belgian_sites,
                             from = ts - 60*60*24*3) %>% 
+  .$results_df %>% 
   mutate(category = the_query) %>% 
   mutate(tstamp = ts)
 
