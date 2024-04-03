@@ -9,7 +9,7 @@ ts <- Sys.time()
 
 
 get_the_nieuws <- function(.x) {
-  res <- get_headlines_all(country = "nl", category = .x) 
+  res <- get_headlines(country = "nl", category = .x) 
   res$results_df %>% 
     mutate(category = .x)
 }
@@ -42,7 +42,7 @@ the_query <- "politiek OR regering OR partij OR poldermodel OR coalitie OR fract
 every_dat <- get_everything(query = the_query,
                             language = "nl", 
                             exclude_domains =  belgian_sites,
-                            from = ts - 60*60*24*3) %>% 
+                            from = ts - 60*60*24*3, sort_by = "popularity") %>% 
   .$results_df %>% 
   mutate(category = the_query) %>% 
   mutate(tstamp = ts)
